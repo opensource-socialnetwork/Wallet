@@ -27,13 +27,13 @@ class Wallet {
 		/**
 		 * Get a current user balance
 		 *
-		 * @return integer
+		 * @return float
 		 */
 		public function getBalance() {
 				if(!isset($this->user->wallet_balance)) {
 						$this->user->wallet_balance = 0;
 				}
-				return intval(trim($this->user->wallet_balance));
+				return floatval(trim($this->user->wallet_balance));
 		}
 		/**
 		 * set a user balance
@@ -44,7 +44,7 @@ class Wallet {
 		 *
 		 * @return boolean
 		 */
-		public function setBalance(int $balance): bool {
+		public function setBalance(float $balance): bool {
 				if(empty($balance)) {
 						return false;
 				}
@@ -55,24 +55,28 @@ class Wallet {
 		 * Debit a mount form user balance
 		 * This will throw expception if user have insufficent balance.
 		 *
-		 * @param integer $amount Debit amount
+		 * @param float $amount Debit amount
 		 * @param string  $description Description
 		 *
 		 * @return boolean
 		 */
-		public function debit(int $amount, string $description): bool {
+		public function debit(float $amount, string $description): bool {
 				if(!empty($amount)) {
 						if(!isset($this->user->wallet_balance)) {
 								$this->user->wallet_balance = 0;
 						}
-						$actual_amount = intval(trim($amount));
-						$old_amount    = intval($this->user->wallet_balance);
+						$actual_amount = floatval(trim($amount));
+						$old_amount    = floatval($this->user->wallet_balance);
 
 						if($actual_amount > $old_amount) {
 								throw new \Wallet\DebitException('Insufficient Funds!', 51);
 						}
 						if($actual_amount <= 0) {
 								throw new \Wallet\DebitException('Invalid Amount!', 13);
+						}
+						$decimal_check = strlen(substr(strrchr($actual_amount, "."), 1));
+						if($decimal_check > 2){
+								throw new \Wallet\DebitException('Amount can be only 2 decimal places!', 14);
 						}
 						$new_balance                      = $old_amount - $actual_amount;
 						$this->user->data->wallet_balance = $new_balance;
@@ -103,8 +107,8 @@ class Wallet {
 						if(!isset($this->user->wallet_balance)) {
 								$this->user->wallet_balance = 0;
 						}
-						$actual_amount = intval(trim($amount));
-						$old_amount    = intval($this->user->wallet_balance);
+						$actual_amount = floatval(trim($amount));
+						$old_amount    = floatval($this->user->wallet_balance);
 						
 						if($actual_amount <= 0) {
 								throw new \Wallet\CreditException('Invalid Amount!', 13);
