@@ -59,7 +59,7 @@ if(isset($settings->payment_methids)){
 						'label' => $item,
 			);
 			$args['value'] = false;
-			if($payment_methods && in_array($key, $avil_methods)){
+			if($avil_methods && in_array($key, $avil_methods)){
 				$args['value'] = true;
 				$args['checked'] = 'checked';	
 			}			
