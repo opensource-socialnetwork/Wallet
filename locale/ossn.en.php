@@ -32,4 +32,15 @@ ossn_register_languages('en', array(
 		'wallet:admin:settings:saved' => 'Settings has been saved',
 		'wallet:admin:settings:save:error' => 'Settings can not be saved right now!',
 		'wallet:charge:min' => 'Your amount is less then the minimum amount required for load!',
+		
+		'wallet:admin:stripe' => 'Stripe',
+		'wallet:admin:stripe:publishable:key' => 'Publishable Key',
+		'wallet:admin:stripe:secret:key' => 'Secret Key',
+		'wallet:admin:payment:methods' => 'Payment Methods',
+		'wallet:charge:card' => 'Charge via Card',
+		'wallet:card:holder' => 'Card Holder',
+		'wallet:card:number' => 'Card Number',
+		'wallet:card:process' => 'The card is being processed please wait.....',
+		'wallet:notconfigured:note' => 'Wallet services are not configured please report this to website admin!',
+		'wallet:method:not:enabled' => 'Method not enabled!',
 )); 

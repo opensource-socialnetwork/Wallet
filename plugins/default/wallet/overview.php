@@ -1,6 +1,20 @@
 <?php
 $DateTime = new DateTime('NOW');
-$wallet = new \Wallet\Wallet(ossn_loggedin_user()->guid);
+$wallet   = new \Wallet\Wallet(ossn_loggedin_user()->guid);
+$settings = wallet_get_settings();
+if(!$settings){
+?>
+<div class="ossn-widget">
+	<div class="widget-heading"><?php echo ossn_print('wallet:overview');?> (<span class="wallet-balance-date"><?php echo $DateTime->format(DateTime::ATOM);?>)</span></div>
+	<div class="widget-contents">
+    	<div class="alert alert-danger">
+        		<?php echo ossn_print('wallet:notconfigured:note');?>
+        </div>
+    </div>
+</div>
+<?php	
+return;
+}
 ?>
 <div class="ossn-widget">
 	<div class="widget-heading"><?php echo ossn_print('wallet:overview');?> (<span class="wallet-balance-date"><?php echo $DateTime->format(DateTime::ATOM);?>)</span></div>
@@ -13,9 +27,17 @@ $wallet = new \Wallet\Wallet(ossn_loggedin_user()->guid);
 </div>
 <div class="ossn-widget">
 	<div class="widget-heading"><?php echo ossn_print('wallet:addbalance');?></div>
-	<div class="widget-contents">
+	<div class="widget-contents text-center">
     	       <p><?php echo ossn_print('wallet:charge:balance:note');?></p>
-               <a href="<?php echo ossn_site_url('wallet/charge/paypal');?>" class="btn btn-sm btn-warning"><i class="fab fa-paypal"></i>PayPal</a>
+               <?php
+			   $methods = wallet_enabled_payment_methods();
+			   if(in_array('paypal', $methods)){ 
+			   ?>
+	               <a href="<?php echo ossn_site_url('wallet/charge/paypal');?>" class="btn btn-outline-secondary"><i class="fab fa-paypal"></i>PayPal</a>
+               <?php } ?>
+               <?php  if(in_array('stripe', $methods)){  ?>
+	               <a href="<?php echo ossn_site_url('wallet/charge/card');?>" class="btn btn-outline-secondary"><i class="fas fa-credit-card"></i>Credit/Debit Card</a>
+               <?php } ?>
     </div>
 </div>
 <div class="ossn-widget">

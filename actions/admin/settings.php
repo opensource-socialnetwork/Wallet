@@ -11,9 +11,18 @@
 $component = new OssnComponents();
 
 $vars = array(
-		'paypal_client_id'        => input('paypal_client_id'),
-		'paypal_client_secret'    => input('paypal_client_secret'),
+		'paypal_client_id'       => input('paypal_client_id'),
+		'paypal_client_secret'   => input('paypal_client_secret'),
+		'stripe_publishable_key' => input('stripe_publishable_key'),
+		'stripe_secret_key'      => input('stripe_secret_key'),
 );
+$methods = input('methods');
+if(!empty($methods)) {
+		$payment_methods = json_encode(array_keys($methods));
+} else {
+		$payment_methods = '';
+}
+$vars['payment_methods'] = $payment_methods;
 if($component->setSettings('Wallet', $vars)) {
 		ossn_trigger_message(ossn_print('wallet:admin:settings:saved'));
 		redirect(REF);
