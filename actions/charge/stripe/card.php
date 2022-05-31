@@ -20,7 +20,6 @@ if($status->status == 'requires_action' && $status->next_action->type == 'use_st
 		));
 } elseif($status->status == 'succeeded') {
 		$amount = $status->amount / 100;
-		$amount = $amount / 100;
 
 		$wallet = new \Wallet\Wallet(ossn_loggedin_user()->guid);
 		$wallet->credit($amount, 'Load via Card');
