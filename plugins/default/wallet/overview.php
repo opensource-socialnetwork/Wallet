@@ -33,10 +33,10 @@ return;
 			   $methods = wallet_enabled_payment_methods();
 			   if(in_array('paypal', $methods)){ 
 			   ?>
-	               <a href="<?php echo ossn_site_url('wallet/charge/paypal');?>" class="btn btn-outline-secondary"><i class="fab fa-paypal"></i>PayPal</a>
+	               <a href="<?php echo ossn_site_url('wallet/charge/paypal');?>" class="btn btn-outline-secondary btn-sm"><i class="fab fa-paypal"></i>PayPal</a>
                <?php } ?>
                <?php  if(in_array('stripe', $methods)){  ?>
-	               <a href="<?php echo ossn_site_url('wallet/charge/card');?>" class="btn btn-outline-secondary"><i class="fas fa-credit-card"></i>Credit/Debit Card</a>
+	               <a href="<?php echo ossn_site_url('wallet/charge/card');?>" class="btn btn-outline-secondary btn-sm"><i class="fas fa-credit-card"></i>Credit/Debit Card</a>
                <?php } ?>
     </div>
 </div>
