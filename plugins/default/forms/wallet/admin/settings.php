@@ -68,7 +68,7 @@ if(isset($settings->payment_methids)){
 ?>
 </div>
 <div class="margin-top-10">
-	<input type="submit" value="<?php echo ossn_print('save');?>" class="btn btn-success" />
+	<input type="submit" value="<?php echo ossn_print('save');?>" class="btn btn-success btn-sm" />
 </div>
 <style>
 	.wallet-payment-methods .checkbox-block {

@@ -22,7 +22,7 @@ if(!isset($settings->stripe_publishable_key) || !isset($settings->stripe_secret_
 <div id="wallet-card-processing" class="d-none">
 	<div class="alert alert-info"><?php echo ossn_print('wallet:card:process');?></div>
 </div>
-<input type="button" id="payWalletCard" class="btn btn-success" value="Pay Now" />
+<input type="button" id="payWalletCard" class="btn btn-success btn-sm" value="Pay Now" />
 <div id="wallet-card-payment-loading" class="ossn-loading d-none"></div>
 <script>
 	wallet_card('<?php echo $settings->stripe_publishable_key;?>');
