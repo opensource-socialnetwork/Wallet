@@ -19,28 +19,45 @@ class Stripe {
 				}
 				\Stripe\Stripe::setApiKey($settings->stripe_secret_key);
 				$this->_stripe = new \Stripe\StripeClient($settings->stripe_secret_key);
-
 		}
 		public function action($id, $price, $descrption) {
+				$user = ossn_loggedin_user();
+				if(!isset($user->wallet_stripe_customer_id)) {
+						$customer = $this->_stripe->customers->create(array(
+								'name'        => $user->fullname,
+								'email'       => $user->email,
+								'description' => 'Wallet Customer',
+						));
+						if($customer && !isset($customer->id)) {
+								error_log('Customer create failed Wallet Stripe');
+								return false;
+						}
+						$customer_id                           = $customer->id;
+						$user->data->wallet_stripe_customer_id = $customer_id;
+						$user->save();
+				} else {
+						$customer_id = $customer->id;
+				}
 				try {
-						$user = ossn_loggedin_user();
 						return \Stripe\PaymentIntent::create(array(
+								'customer'            => $customer_id,
 								'payment_method'      => $id,
 								'amount'              => intval($price) * 100,
 								'currency'            => strtolower(WALLET_CURRENCY_CODE),
 								'description'         => $descrption,
 								'confirmation_method' => 'manual',
-								'confirm'             => true,							
+								'confirm'             => true,
 						));
 				} catch (Exception $e) {
 						header('Content-Type: application/json');
 						echo json_encode(array(
 								'error' => $e->getMessage(),
 						));
+						error_log($e->getMessage());
 						exit();
 				}
 		}
-		public function verify($id){
-				return $this->_stripe->paymentIntents->confirm($id);	
+		public function verify($id) {
+				return $this->_stripe->paymentIntents->confirm($id);
 		}
 }
