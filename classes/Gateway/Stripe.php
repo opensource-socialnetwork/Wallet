@@ -47,6 +47,11 @@ class Stripe {
 								'description'         => $descrption,
 								'confirmation_method' => 'manual',
 								'confirm'             => true,
+								'metadata'            => array(
+										'user_guid'  => $user->guid,
+										'user_email' => $user->email,
+										'user_name'  => $user->fullname,
+								),
 						));
 				} catch (Exception $e) {
 						header('Content-Type: application/json');
