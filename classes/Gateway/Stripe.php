@@ -36,7 +36,7 @@ class Stripe {
 						$user->data->wallet_stripe_customer_id = $customer_id;
 						$user->save();
 				} else {
-						$customer_id = $customer->id;
+						$customer_id = $user->wallet_stripe_customer_id;
 				}
 				try {
 						return \Stripe\PaymentIntent::create(array(
