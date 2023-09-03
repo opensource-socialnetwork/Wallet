@@ -22,7 +22,7 @@ class Stripe {
 		}
 		public function action($id, $price, $descrption) {
 				$user = ossn_loggedin_user();
-				if(!isset($user->wallet_stripe_customer_id)) {
+				if(!isset($user->wallet_stripe_customer_id) || (isset($user->wallet_stripe_customer_id) && empty($user->wallet_stripe_customer_id))) {
 						$customer = $this->_stripe->customers->create(array(
 								'name'        => $user->fullname,
 								'email'       => $user->email,
@@ -45,13 +45,9 @@ class Stripe {
 								'amount'              => intval($price) * 100,
 								'currency'            => strtolower(WALLET_CURRENCY_CODE),
 								'description'         => $descrption,
+								'payment_method_types' => ['card'],
 								'confirmation_method' => 'manual',
 								'confirm'             => true,
-								'metadata'            => array(
-										'user_guid'  => $user->guid,
-										'user_email' => $user->email,
-										'user_name'  => $user->fullname,
-								),
 						));
 				} catch (Exception $e) {
 						header('Content-Type: application/json');
