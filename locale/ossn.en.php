@@ -43,4 +43,11 @@ ossn_register_languages('en', array(
 		'wallet:card:process' => 'The card is being processed please wait.....',
 		'wallet:notconfigured:note' => 'Wallet services are not configured please report this to website admin!',
 		'wallet:method:not:enabled' => 'Method not enabled!',
+		
+		'wallet:change:user:balance' => 'Change Balance',
+		'wallet:alter:type' => 'Change Type',
+		'wallet:alter:type:entier' => 'Entire/Total Balance Change',
+		'wallet:alter:type:debit' => 'Debit (Deduct)',
+		'wallet:alter:type:credit' => 'Credit (Add)',
+		'wallet:alter:amount' => 'Amount',
 )); 

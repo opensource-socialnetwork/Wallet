@@ -29,6 +29,8 @@ ossn_register_class(array(
  */
 function wallet_init() {
 		ossn_extend_view('css/ossn.default', 'css/wallet/site');
+		ossn_extend_view('js/ossn.site', 'js/wallet');
+		
 		ossn_new_js('wallet.card', 'wallet/card/js');
 		
 		if(ossn_isLoggedin()) {
@@ -49,9 +51,30 @@ function wallet_init() {
 		}
 		if(ossn_isAdminLoggedin()) {
 				ossn_register_action('wallet/admin/settings', __Wallet__ . 'actions/admin/settings.php');
+				
+				//change balance or add balance menu
+				ossn_register_action('wallet/alter/balance', __Wallet__ . 'actions/alter.php');				
+				ossn_register_callback('page', 'load:profile', 'wallet_user_profile_balance_change_menu');				
 		}
 		ossn_add_hook('services', 'methods', 'wallet_api_register');
 		ossn_register_callback('user', 'delete', 'wallet_user_delete');
+}
+/**
+ * Alter user balance menu
+ *
+ * @return void
+ * @access private
+ */
+function wallet_user_profile_balance_change_menu($name, $type, $params) {
+    $guid = ossn_get_page_owner_guid();
+	//ossn_site_url("action/wallet/alter/balance?guid={$guid}", true)
+	ossn_register_menu_item('profile_extramenu', array(
+				'name' => 'wallet_balance_alter_profile',
+				'text' => ossn_print('wallet:change:user:balance'),
+				'href' => 'javascript:void(0)',
+				'id'   => 'wallet-alter-balance',
+				'data-guid' => $guid,
+	));
 }
 /**
  * Wallet component register a API endpoints
@@ -78,6 +101,16 @@ function wallet_page_handler($pages) {
 				$contents['content'] = ossn_plugin_view('wallet/overview');
 				$content             = ossn_set_page_layout('newsfeed', $contents);
 				echo ossn_view_page($title, $content);
+				break;
+			case 'alter':
+				if(!ossn_isAdminLoggedin()){
+						ossn_error_page();					
+				}
+				echo ossn_plugin_view('output/ossnbox', array(
+							'title'    => ossn_print('wallet:change:user:balance'),
+							'contents' => ossn_plugin_view('wallet/balance_alter'),
+							'callback' => '#ossn-wallet-balance-alter-btn',
+				));					
 				break;
 			case 'charge':
 				$methods = wallet_enabled_payment_methods();
