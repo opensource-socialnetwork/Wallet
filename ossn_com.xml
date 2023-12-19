@@ -7,7 +7,7 @@
     <license>OPEN SOURCE SOCIAL NETWORK LICENSE 4.0</license>
     <author_url>https://www.arsalanshah.com/</author_url>
     <license_url>https://www.opensource-socialnetwork.org/licence</license_url>
-    <version>2.7</version>
+    <version>2.8</version>
 	<requires>
 		<type>ossn_version</type>
 		<version>6.1</version>

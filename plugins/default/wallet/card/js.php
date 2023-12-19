@@ -5,7 +5,7 @@ function wallet_card(key) {
 		fonts: [{
 			cssSrc: 'https://fonts.googleapis.com/css?family=Roboto+Slab:300,700,400',
 		}, ],
-		locale: 'en'
+		locale: '<?php echo ossn_site_settings('langauge');?>'
 	});
 	$styles = {
 		invalid: {
