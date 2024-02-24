@@ -15,9 +15,9 @@ $vars = array(
 		'paypal_client_secret'   => input('paypal_client_secret'),
 		'stripe_publishable_key' => input('stripe_publishable_key'),
 		'stripe_secret_key'      => input('stripe_secret_key'),
-		'iyzipay_key'			 => input('iyzipay_key'),
+		'iyzipay_key'            => input('iyzipay_key'),
 		'iyzipay_secret_key'     => input('iyzipay_secret_key'),
-		'iyzipay_mode'			 => input('iyzipay_mode'),
+		'iyzipay_mode'           => input('iyzipay_mode'),
 );
 $methods = input('methods');
 if(!empty($methods)) {
