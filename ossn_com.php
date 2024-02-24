@@ -9,7 +9,7 @@
  * @link      https://www.openteknik.com/
  */
 define('__Wallet__', ossn_route()->com . 'Wallet/');
-define('WALLET_CURRENCY_CODE', 'TRY');
+define('WALLET_CURRENCY_CODE', 'USD');
 define('WALLET_MINIMUM_LOAD', 10);
 
 ossn_register_class(array(
