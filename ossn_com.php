@@ -9,7 +9,7 @@
  * @link      https://www.openteknik.com/
  */
 define('__Wallet__', ossn_route()->com . 'Wallet/');
-define('WALLET_CURRENCY_CODE', 'USD');
+define('WALLET_CURRENCY_CODE', 'TRY');
 define('WALLET_MINIMUM_LOAD', 10);
 
 ossn_register_class(array(
@@ -20,6 +20,7 @@ ossn_register_class(array(
 		'Wallet\GatewayException' => __Wallet__ . 'classes/Exception/Gateway.php',
 		'Wallet\Gateway\PayPal'   => __Wallet__ . 'classes/Gateway/PayPal.php',
 		'Wallet\Gateway\Stripe'   => __Wallet__ . 'classes/Gateway/Stripe.php',
+		'Wallet\Gateway\Iyzipay'   => __Wallet__ . 'classes/Gateway/Iyzipay.php',
 		'Wallet\Log'              => __Wallet__ . 'classes/Log.php',
 ));
 /**
@@ -112,6 +113,23 @@ function wallet_page_handler($pages) {
 							'callback' => '#ossn-wallet-balance-alter-btn',
 				));					
 				break;
+			case 'iyzipay_callback':
+					$token   = input('token');
+					if(empty($token)){
+							ossn_error_page();	
+					}
+					$iyzipay = new Wallet\Gateway\Iyzipay();
+					$callback = $iyzipay->callback($token);
+					
+					if($callback->getPaymentStatus() == 'SUCCESS'){
+							$amount = $callback->getpaidPrice();
+							
+							$wallet = new \Wallet\Wallet(ossn_loggedin_user()->guid);
+							$wallet->credit($amount, 'Load via Card');
+							
+							redirect('wallet/overview');
+					}
+				break;
 			case 'charge':
 				$methods = wallet_enabled_payment_methods();
 				switch($pages[1]) {
@@ -136,6 +154,16 @@ function wallet_page_handler($pages) {
 						$content             = ossn_set_page_layout('newsfeed', $contents);
 						echo ossn_view_page($title, $content);					
 						break;
+					case 'iyzipay':
+						if(!in_array('iyzipay', $methods)){
+								ossn_trigger_message(ossn_print('wallet:method:not:enabled'), 'error');
+								redirect('wallet/overview');	
+						}					
+						$title               = ossn_print('wallet:charge:iyzipay');
+						$contents['content'] = ossn_plugin_view('wallet/charge/iyzipay');
+						$content             = ossn_set_page_layout('newsfeed', $contents);
+						echo ossn_view_page($title, $content);					
+						break;						
 					case 'failed':
 						$title               = ossn_print('wallet:charge:failed');
 						$contents['content'] = ossn_plugin_view('wallet/charge/failed');

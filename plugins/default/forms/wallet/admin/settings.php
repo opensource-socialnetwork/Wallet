@@ -5,6 +5,10 @@ $paypal_client_id       = '';
 $paypal_client_secret   = '';
 $stripe_publishable_key = '';
 $stripe_secret_key      = '';
+$iyzipay_key            = '';
+$iyzipay_secret_key     = '';
+$iyzipay_mode           = '';
+
 $payment_methods        = array();
 if(isset($settings->paypal_client_id)) {
 		$paypal_client_id = $settings->paypal_client_id;
@@ -19,7 +23,16 @@ if(isset($settings->stripe_secret_key)) {
 		$stripe_secret_key = $settings->stripe_secret_key;
 }
 if(isset($settings->payment_methids)){
-		$payment_methods = 	$settings = json_decode($settings->payment_methids, true);	
+		$payment_methods = json_decode($settings->payment_methids, true);	
+}
+if(isset($settings->iyzipay_key)){
+		$iyzipay_key = $settings->iyzipay_key;	
+}
+if(isset($settings->iyzipay_secret_key)){
+		$iyzipay_secret_key = $settings->iyzipay_secret_key;	
+}
+if(isset($settings->iyzipay_mode)){
+		$iyzipay_mode = $settings->iyzipay_mode;	
 }
 ?>
 <div>
@@ -45,6 +58,31 @@ if(isset($settings->payment_methids)){
     <input type="text" name="stripe_secret_key" value="<?php echo $stripe_secret_key;?>" />
 </div>
 <div>
+	<label><?php echo ossn_print('wallet:admin:iyzipay');?></label>
+</div>
+<div>
+	<label><?php echo ossn_print('wallet:admin:iyzipay:key');?></label>
+    <input type="text" name="iyzipay_key" value="<?php echo $iyzipay_key;?>" />
+</div>
+<div>
+	<label><?php echo ossn_print('wallet:admin:iyzipay:secret:key');?></label>
+    <input type="text" name="iyzipay_secret_key" value="<?php echo $iyzipay_secret_key;?>" />
+</div>
+<div>
+	<label><?php echo ossn_print('wallet:admin:iyzipay:mode');?></label>
+    <?php
+		echo ossn_plugin_view('input/dropdown', array(
+					'name' => 'iyzipay_mode',
+					'value' => $iyzipay_mode,
+					'options' => array(
+						'' => '',
+					   'sandbox' => 'Sandbox',
+					   'production' => 'Production',
+					),
+		));
+	?>
+</div>
+<div>
 	<label><?php echo ossn_print('wallet:admin:payment:methods');?></label>
 </div>
 <div class="wallet-payment-methods">
@@ -52,6 +90,7 @@ if(isset($settings->payment_methids)){
 	$payment_methods = array(
 				    'paypal' => 'PayPal',
 					'stripe' => 'Stripe (Card)',
+					'iyzipay' => 'Iyzipay (Iyzico)',
 	);
 	$avil_methods = wallet_enabled_payment_methods();
 	foreach($payment_methods  as $key => $item){

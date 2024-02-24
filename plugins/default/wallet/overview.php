@@ -35,9 +35,14 @@ return;
 			   ?>
 	               <a href="<?php echo ossn_site_url('wallet/charge/paypal');?>" class="btn btn-outline-secondary btn-sm"><i class="fab fa-paypal"></i>PayPal</a>
                <?php } ?>
-               <?php  if(in_array('stripe', $methods)){  ?>
+               <?php  
+			   if(in_array('stripe', $methods)){  ?>
 	               <a href="<?php echo ossn_site_url('wallet/charge/card');?>" class="btn btn-outline-secondary btn-sm"><i class="fas fa-credit-card"></i>Credit/Debit Card</a>
                <?php } ?>
+               <?php  
+			   if(in_array('iyzipay', $methods)){  ?>
+	               <a href="<?php echo ossn_site_url('wallet/charge/iyzipay');?>" class="btn btn-outline-secondary btn-sm"><i class="fas fa-credit-card"></i><?php echo ossn_print('wallet:charge:iyzipay');?></a>
+               <?php } ?>               
     </div>
 </div>
 <div class="ossn-widget">
