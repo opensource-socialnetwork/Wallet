@@ -1,7 +1,13 @@
 <?php
+$user = ossn_loggedin_user();
+
 $DateTime = new DateTime('NOW');
 $wallet   = new \Wallet\Wallet(ossn_loggedin_user()->guid);
 $settings = wallet_get_settings();
+
+$owner_email = ossn_site_settings('owner_email');
+
+$seamless = new \Wallet\Gateway\Stripe\Seamless($user);
 if(!$settings){
 ?>
 <div class="ossn-widget">
@@ -25,6 +31,7 @@ return;
              </div>
     </div>
 </div>
+
 <div class="ossn-widget">
 	<div class="widget-heading"><?php echo ossn_print('wallet:addbalance');?></div>
 	<div class="widget-contents text-center">
@@ -45,6 +52,38 @@ return;
                <?php } ?>               
     </div>
 </div>
+
+<div class="ossn-widget">
+	<div class="widget-heading"><?php echo ossn_print('wallet:savepayment:method');?></div>
+	<div class="widget-contents text-center">
+    		<p><?php echo ossn_print('wallet:savepayment:method:note');?></p>
+            <?php
+			if(!isset($user->wallet_stripe_payment_card_details) || isset($user->wallet_stripe_payment_card_details) && empty($user->wallet_stripe_payment_card_details)){ ?>
+            <a href="<?php echo ossn_site_url('wallet/seamless');?>" class="btn btn-outline-secondary btn-sm">
+            	<i class="far fa-credit-card"></i> <?php echo ossn_print('wallet:addcard');?>
+            </a>
+            <?php 
+			} else {
+				$card = json_decode($user->wallet_stripe_payment_card_details);
+			?>
+            <?php if($seamless->hasFailedLimitReached()){ ?>
+            <div class="alert alert-warning"><?php echo ossn_print('wallet:seamless:blocked', [$owner_email]);?></div>
+            <?php } ?>
+            <div class="wallet-seamless-card-item">
+            	<i class="fab fa-cc-<?php echo $card->brand;?>"></i>
+                <span class="last4">**** **** <?php echo $card->last4;?></span>
+                <span class="exp">**/<?php echo $card->exp_year;?></span>
+                <?php
+				if(!$seamless->hasFailedLimitReached()){ ?>
+                <a href="<?php echo ossn_site_url('action/wallet/charge/card/delete', true);?>" class="badge bg-danger float-end ossn-make-sure" data-ossn-msg="<?php echo ossn_print('wallet:makesure:delete:seamless');?>"><i class="fa fa-trash"></i></a>
+                <?php } else { ?>
+                <button disabled="disabled" class="badge bg-secondary float-end opacity-50"><i class="fa fa-trash"></i></button>                
+                <?php } ?>
+            </div>
+            <?php } ?>
+    </div>
+</div>
+
 <div class="ossn-widget">
 	<div class="widget-heading"><?php echo ossn_print('wallet:history');?></div>
 	<div class="widget-contents">

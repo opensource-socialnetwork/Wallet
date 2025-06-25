@@ -3,7 +3,7 @@ $id      = input('id');
 $success = false;
 header('Content-Type: application/json');
 
-$stripe = new \Wallet\Gateway\Stripe();
+$stripe = new \Wallet\Gateway\Stripe(ossn_loggedin_user());
 try {
 		$verify = $stripe->verify($id);
 		if($verify && $verify->status == 'succeeded') {

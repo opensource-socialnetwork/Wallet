@@ -1,78 +1,105 @@
 # Wallet
-A general wallet for users that they can charge.  Site admin can utilize that wallet balance using set of available APIs. PayPal is the method available  to load the wallet. Minimum amount is set is 10 and default current is USD.  You may can edit these details in ossn_com.php file. The wallet only supports the amounts that are not in floating points.
 
-    define('WALLET_CURRENCY_CODE', 'USD'); //your 3 digits currency code from PayPal
-    define('WALLET_MINIMUM_LOAD', 10);  //Minimum amount integer only (no floating)
+> A general-purpose wallet system for users, allowing them to add balance to their account. The site administrator can utilize the user's wallet balance through a set of available APIs.
 
-## API END POINTS
-### Debit 
-    CURL https://www.yourwebsite.com/api/v1.0/wallet/debit
-    
-### Credit
-    CURL https://www.yourwebsite.com/api/v1.0/wallet/credit
+* **Supported Payment Method:** PayPal/Stripe/Iyzipay
+* **Minimum Deposit:** The minimum allowed deposit is 10.
+* **Currency:** The default currency is **USD** (editable in `ossn_com.php`).
+* **Amount Format:** Only whole numbers are supported — floating point values are not accepted.
 
-### Responces and parameter required
+### 🔐 **Seamless Payments (Stripe Only)**
 
- | Parameter | Type |  Description | Required |
- | ------------- | -------------  | -------------  | -------------  |
- |api_key_token | string | Your API token | Yes | 
- |guid | integer | User GUID | Yes | 
- |amount | integer | Amount to debit must not be in points | Yes | 
- |description | integer | Description | Yes | 
- 
-``` 
- {
-    "merchant": "Open Source Social Network",
-    "url": "https:\/\/yourwebsite.com\/",
-    "time_token": 1637513403,
-    "payload": {
-        "status": "success",
-        "amount": "50",
-        "guid": "1"
-    },
-    "code": "100",
-    "message": "Request successfully executed"
+Wallet now supports **seamless payments**, allowing users to securely save their card for future charges. This feature is only available when **Stripe** is configured as the payment gateway.
+
+### 📧 **Transaction Notifications**
+
+Users receive email notifications for every **credit or debit** transaction, including **both successful and failed** attempts.
+
+### ⚙️ Configuration Constants
+
+```php
+define('WALLET_CURRENCY_CODE', 'USD');         // Your 3-letter currency code (e.g., USD)
+define('WALLET_MINIMUM_LOAD', 10);             // Minimum wallet load (integer only)
+define('WALLET_SEAMLESS_CHARGE', 1);           // Minimum charge to store card for seamless payments
+````
+
+## API ENDPOINTS
+
+### ➖ Debit
+
+```bash
+CURL https://www.yourwebsite.com/api/v1.0/wallet/debit
+```
+
+### ➕ Credit
+
+```bash
+CURL https://www.yourwebsite.com/api/v1.0/wallet/credit
+```
+
+### 📥 Parameters & Responses
+
+| Parameter       | Type    | Description                              | Required |
+| --------------- | ------- | ---------------------------------------- | -------- |
+| api\_key\_token | string  | Your API token                           | Yes      |
+| guid            | integer | User GUID                                | Yes      |
+| amount          | integer | Amount to debit (must be a whole number) | Yes      |
+| description     | string  | Transaction description                  | Yes      |
+
+### ✅ Sample JSON Response
+
+```json
+{
+  "merchant": "Open Source Social Network",
+  "url": "https:\/\/yourwebsite.com\/",
+  "time_token": 1637513403,
+  "payload": {
+    "status": "success",
+    "amount": "50",
+    "guid": "1"
+  },
+  "code": "100",
+  "message": "Request successfully executed"
 }
 ```
-## Access using PHP
-```
+
+## 🧩 Access Using PHP
+
+```php
 <?php
-....
-....
+// Credit wallet
 try {
     $user_guid = ossn_loggedin_user()->guid;
     $wallet = new Wallet\Wallet($user_guid);
     $amount = 20;
     $description = 'Some description';
-    var_dump($wallet->credit($amount, $description)); //credit amount
+    var_dump($wallet->credit($amount, $description));
 } catch (Wallet\NoUserException $e) {
     echo $e->getMessage();
-}  catch (Wallet\CreditException $e) {
+} catch (Wallet\CreditException $e) {
     echo $e->getMessage();
 }
 
-//debit
-
+// Debit wallet
 try {
     $user_guid = ossn_loggedin_user()->guid;
     $wallet = new Wallet\Wallet($user_guid);
     $amount = 20;
     $description = 'Some description';
-    var_dump($wallet->debit($amount, $description)); //debit amount
+    var_dump($wallet->debit($amount, $description));
 } catch (Wallet\NoUserException $e) {
     echo $e->getMessage();
-}  catch (Wallet\DebitException $e) {
+} catch (Wallet\DebitException $e) {
     echo $e->getMessage();
 }
 
-//getting balance
+// Get wallet balance
 $user_guid = ossn_loggedin_user()->guid;
 $wallet = new Wallet\Wallet($user_guid);
 echo $wallet->getBalance();
 
-//changing balance
+// Set new balance
 $user_guid = ossn_loggedin_user()->guid;
 $wallet = new Wallet\Wallet($user_guid);
 echo $wallet->setBalance(<new amount>);
-
 ```

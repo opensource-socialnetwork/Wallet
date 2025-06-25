@@ -10,7 +10,7 @@ if($amount <= 0) {
 }
 $id = input('id');
 
-$stripe = new \Wallet\Gateway\Stripe();
+$stripe = new \Wallet\Gateway\Stripe\Seamless(ossn_loggedin_user());
 $status = $stripe->action($id, $amount, 'Wallet load via card');
 
 if($status->status == 'requires_action' && $status->next_action->type == 'use_stripe_sdk') {

@@ -41,3 +41,13 @@
 	box-shadow: none;
 	-webkit-box-shadow: none
 }
+.wallet-seamless-card-item {
+    font-size: 16px;
+    border: 1px dashed #ccc;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: left;
+}
+.wallet-seamless-card-item i {
+	margin-right:0px;
+}
