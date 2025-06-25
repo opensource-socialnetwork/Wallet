@@ -35,7 +35,7 @@ function wallet_card(key) {
 				Ossn.PostRequest({
 					url: $action,
 					callback: function(payment_response) {
-						console.log(payment_response);
+						//console.log(payment_response);
 						if (!payment_response.error && payment_response.requires_action) {
 							stripe.handleCardAction(payment_response.payment_intent_client_secret).then(function(intent) {
 								if (intent.error) {
@@ -99,7 +99,7 @@ function wallet_seamless(key) {
                       	  	card: card,
                  		 }
               		  }).then(function(result) {
-						  	console.log(result);
+						  	//console.log(result);
 							if(result.setupIntent.status == 'succeeded'){
 								var paymentMethodId = result.setupIntent.payment_method;
 								Ossn.PostRequest({
