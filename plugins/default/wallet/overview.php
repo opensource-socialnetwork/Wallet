@@ -52,7 +52,10 @@ return;
                <?php } ?>               
     </div>
 </div>
-
+<?php
+$methods = wallet_enabled_payment_methods();
+if(in_array('stripe', $methods)) {
+?>
 <div class="ossn-widget">
 	<div class="widget-heading"><?php echo ossn_print('wallet:savepayment:method');?></div>
 	<div class="widget-contents text-center">
@@ -83,7 +86,7 @@ return;
             <?php } ?>
     </div>
 </div>
-
+<?php } ?>
 <div class="ossn-widget">
 	<div class="widget-heading"><?php echo ossn_print('wallet:history');?></div>
 	<div class="widget-contents">
