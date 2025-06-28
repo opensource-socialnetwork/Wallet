@@ -7,7 +7,6 @@ $settings = wallet_get_settings();
 
 $owner_email = ossn_site_settings('owner_email');
 
-$seamless = new \Wallet\Gateway\Stripe\Seamless($user);
 if(!$settings){
 ?>
 <div class="ossn-widget">
@@ -55,6 +54,7 @@ return;
 <?php
 $methods = wallet_enabled_payment_methods();
 if(in_array('stripe', $methods)) {
+$seamless = new \Wallet\Gateway\Stripe\Seamless($user);
 ?>
 <div class="ossn-widget">
 	<div class="widget-heading"><?php echo ossn_print('wallet:savepayment:method');?></div>
