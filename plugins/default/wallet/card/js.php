@@ -18,32 +18,41 @@ function wallet_card(key) {
 		style: $styles,
 	});
 	card.mount('#card');
-	$(document).ready(function() {
-		$("body").on('click', '#payWalletCard', function(event) {
+	$(document).ready(function () {
+		$("body").on('click', '#payWalletCard', function (event) {
 			event.preventDefault();
 			$('#payWalletCard').hide();
 			$('#wallet-card-details').addClass('d-none');
 			$('#wallet-card-processing').removeClass('d-none');
 			$('#wallet-card-payment-loading').removeClass('d-none');
 			var amount = $('#amount').val();
-			if(parseInt(amount) <= 0){
-					window.location = Ossn.site_url + 'wallet/charge/failed';
-					return false;
+			if (parseInt(amount) <= 0) {
+				window.location = Ossn.site_url + 'wallet/charge/failed';
+				return false;
 			}
-			stripe.createPaymentMethod('card', card).then(function(result) {
+			stripe.createPaymentMethod('card', card).then(function (result) {
+				if (result.error) {
+					var err_msg = result.error.message;
+					$('#wallet-form-errors .alert').removeClass('d-none').html(err_msg);
+
+					setTimeout(function () {
+						location.reload();
+					}, 2000);
+					return false;
+				}
 				$action = Ossn.site_url + 'action/wallet/charge/card?id=' + result.paymentMethod.id + '&amount=' + amount;
 				Ossn.PostRequest({
 					url: $action,
-					callback: function(payment_response) {
+					callback: function (payment_response) {
 						//console.log(payment_response);
 						if (!payment_response.error && payment_response.requires_action) {
-							stripe.handleCardAction(payment_response.payment_intent_client_secret).then(function(intent) {
+							stripe.handleCardAction(payment_response.payment_intent_client_secret).then(function (intent) {
 								if (intent.error) {
 									window.location = Ossn.site_url + 'wallet/charge/failed';
 								} else {
 									Ossn.PostRequest({
 										url: Ossn.site_url + 'action/wallet/charge/card/verify?id=' + intent.paymentIntent.id,
-										callback: function(final) {
+										callback: function (final) {
 											if (final.success || final.failed) {
 												window.location = final.redirect;
 											}
@@ -53,8 +62,8 @@ function wallet_card(key) {
 							});
 						}
 						//success or failed
-						if(payment_response.redirect){
-								window.location = payment_response.redirect;	
+						if (payment_response.redirect) {
+							window.location = payment_response.redirect;
 						}
 					}
 				});
@@ -62,6 +71,7 @@ function wallet_card(key) {
 		});
 	});
 }
+
 function wallet_seamless(key) {
 	var stripe = Stripe(key);
 	var elements = stripe.elements({
@@ -81,10 +91,10 @@ function wallet_seamless(key) {
 		style: $styles,
 	});
 	card.mount('#card');
-	$(document).ready(function() {
-		$("body").on('click', '#payWalletCard', function(event) {
+	$(document).ready(function () {
+		$("body").on('click', '#payWalletCard', function (event) {
 			event.preventDefault();
-			
+
 			$('#payWalletCard').hide();
 			$('#wallet-card-details').addClass('d-none');
 			$('#wallet-card-processing').removeClass('d-none');
@@ -93,29 +103,37 @@ function wallet_seamless(key) {
 			$action = Ossn.site_url + 'action/wallet/charge/card/future';
 			Ossn.PostRequest({
 				url: $action,
-				callback: function(payment_response) {
+				callback: function (payment_response) {
 					stripe.confirmCardSetup(payment_response.payment_intent_client_secret, {
-                   		 payment_method: {
-                      	  	card: card,
-                 		 }
-              		  }).then(function(result) {
-						  	//console.log(result);
-							if(result.setupIntent.status == 'succeeded'){
-								var paymentMethodId = result.setupIntent.payment_method;
-								Ossn.PostRequest({
-									url: Ossn.site_url + 'action/wallet/charge/card/future/save?payment_id='+paymentMethodId,
-									callback: function(response) {
-										if(response.success == true){
-											window.location = Ossn.site_url + "wallet/overview";
-										} else {
-											window.location = response.redirect;	
-										}
+						payment_method: {
+							card: card,
+						}
+					}).then(function (result) {
+						if (result.error) {
+							var err_msg = result.error.message;
+							$('#wallet-form-errors .alert').removeClass('d-none').html(err_msg);
+
+							setTimeout(function () {
+								location.reload();
+							}, 2000);
+							return false;
+						}
+						if (result.setupIntent.status == 'succeeded') {
+							var paymentMethodId = result.setupIntent.payment_method;
+							Ossn.PostRequest({
+								url: Ossn.site_url + 'action/wallet/charge/card/future/save?payment_id=' + paymentMethodId,
+								callback: function (response) {
+									if (response.success == true) {
+										window.location = Ossn.site_url + "wallet/overview";
+									} else {
+										window.location = response.redirect;
 									}
-								});
-							}
-					  });
+								}
+							});
+						}
+					});
 				}
-			});						
+			});
 		});
 	});
 }

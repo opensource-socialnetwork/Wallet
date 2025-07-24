@@ -5,6 +5,9 @@ if(!isset($settings->stripe_publishable_key) || !isset($settings->stripe_secret_
 		throw new \Wallet\GatewayException('Invalid settings in administrator panel!');
 }
 ?>
+<div id="wallet-form-errors">
+	<div class="alert alert-danger d-none"></div>
+</div>
 <div id="wallet-card-details">
 	<div>
 		<label><?php echo ossn_print('wallet:amount');?> (<?php echo WALLET_CURRENCY_CODE;?>)</label>

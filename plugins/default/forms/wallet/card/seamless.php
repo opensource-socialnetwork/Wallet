@@ -5,6 +5,9 @@ if(!isset($settings->stripe_publishable_key) || !isset($settings->stripe_secret_
 		throw new \Wallet\GatewayException('Invalid settings in administrator panel!');
 }
 ?>
+<div id="wallet-form-errors">
+	<div class="alert alert-danger d-none"></div>
+</div>
 <div id="wallet-card-details">
 	<div class="alert alert-success" role="alert">
  		 <h4 class="alert-heading"><?php echo ossn_print('wallet:seamnless:charge:head');?></h4>
