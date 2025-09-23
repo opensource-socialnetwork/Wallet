@@ -98,6 +98,12 @@ class Wallet {
 												$user       = ossn_user_by_guid($this->user->guid);
 												$this->user = $user;
 												$old_amount = floatval($user->wallet_balance);
+												ossn_trigger_callback('wallet', 'card:charged', array(
+														'user'       => $user,
+														'amount'     => $amount,
+														'descrpitor' => 'Load via Card',
+														'time'       => time(),
+												));
 										}
 								} catch (\Stripe\Exception\CardException $e) {
 										//payment failed
@@ -151,7 +157,7 @@ class Wallet {
 		 */
 		public function seamlessActive() {
 				$methods = wallet_enabled_payment_methods();
-				if(isset($this->user->wallet_stripe_payment_method_id) && in_array('stripe', $methods)) {
+				if(isset($this->user->wallet_stripe_payment_method_id) && $this->user->wallet_stripe_payment_method_id != false && in_array('stripe', $methods)) {
 						return true;
 				}
 				return false;

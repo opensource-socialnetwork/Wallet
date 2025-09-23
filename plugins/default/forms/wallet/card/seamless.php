@@ -24,7 +24,7 @@ $duration = array(
 		<label><?php echo ossn_print('membershiptier:duration');?></label>
 		<input type="text" value="<?php echo $duration[$tier->duration];?>" readonly/>      
         
-        <input type="hidden" name="tier_guid" value="<?php echo $iter->guid;?>" />          
+        <input type="hidden" name="tier_guid" value="<?php echo $tier->guid;?>" />          
     <?php } else { ?>
 	<div class="alert alert-success" role="alert">
  		 <h4 class="alert-heading"><?php echo ossn_print('wallet:seamnless:charge:head');?></h4>
