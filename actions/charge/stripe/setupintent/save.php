@@ -30,7 +30,7 @@ try {
 						$wallet->credit(WALLET_SEAMLESS_CHARGE, ossn_print('wallet:seamlesscharge:credit'));
 				}
 
-				if($tier) {
+				if($tier && com_is_active('MembershipTier')) {
 						$membership = new Membership\Tier();
 						$membership->setSubscribed(ossn_loggedin_user(), $tier->guid, $tier->duration);
 						$redirect = 'home';
