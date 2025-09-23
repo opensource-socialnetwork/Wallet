@@ -12,6 +12,13 @@ try {
 				$wallet = new \Wallet\Wallet(ossn_loggedin_user()->guid);
 				$wallet->credit($amount, 'Load via Card');
 
+				ossn_trigger_callback('wallet', 'card:charged', array(
+						'user'       => ossn_loggedin_user(),
+						'amount'     => $amount,
+						'descrpitor' => 'Load via Card',
+						'time'       => time(),
+				));
+
 				echo json_encode(array(
 						'success'  => true,
 						'redirect' => ossn_site_url('wallet/overview'),

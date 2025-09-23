@@ -5,7 +5,7 @@ function wallet_card(key) {
 		fonts: [{
 			cssSrc: 'https://fonts.googleapis.com/css?family=Roboto+Slab:300,700,400',
 		}, ],
-		locale: '<?php echo ossn_site_settings('langauge');?>'
+		locale: '<?php echo ossn_site_settings('langauge');?>',
 	});
 	$styles = {
 		invalid: {
@@ -72,7 +72,7 @@ function wallet_card(key) {
 	});
 }
 
-function wallet_seamless(key) {
+function wallet_seamless(key, tier_guid) {
 	var stripe = Stripe(key);
 	var elements = stripe.elements({
 		fonts: [{
@@ -121,10 +121,12 @@ function wallet_seamless(key) {
 						if (result.setupIntent.status == 'succeeded') {
 							var paymentMethodId = result.setupIntent.payment_method;
 							Ossn.PostRequest({
-								url: Ossn.site_url + 'action/wallet/charge/card/future/save?payment_id=' + paymentMethodId,
+								url: Ossn.site_url + 'action/wallet/charge/card/future/save?payment_id=' + paymentMethodId + '&tier_guid='+tier_guid,
 								callback: function (response) {
-									if (response.success == true) {
+									if (response.success == true && response.redirect == false) {
 										window.location = Ossn.site_url + "wallet/overview";
+									} else if(response.success == true && response.redirect != false){
+										window.location = Ossn.site_url + response.redirect;
 									} else {
 										window.location = response.redirect;
 									}

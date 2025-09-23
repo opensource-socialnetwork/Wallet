@@ -150,9 +150,23 @@ function wallet_page_handler($pages) {
 				}
 				ossn_load_js('wallet.card');
 
+				$tier = false;
+				$guid = false;
+
+				$tier = isset($pages[1]) ? $pages[1] : false;
+				$guid = isset($pages[2]) ? $pages[2] : false;
+
+				if(empty($tier) || empty($guid) || !com_is_active('MembershipTier')) {
+						$tier = false;
+						$guid = false;
+				}
+
 				$title               = ossn_print('wallet:savepayment:method');
-				$contents['content'] = ossn_plugin_view('wallet/card/seamless');
-				$content             = ossn_set_page_layout('newsfeed', $contents);
+				$contents['content'] = ossn_plugin_view('wallet/card/seamless', array(
+						'tier' => $tier,
+						'guid' => $guid,
+				));
+				$content = ossn_set_page_layout('newsfeed', $contents);
 				echo ossn_view_page($title, $content);
 				break;
 		case 'seamlessfailed':
@@ -160,7 +174,7 @@ function wallet_page_handler($pages) {
 				if(!in_array('stripe', $methods)) {
 						ossn_trigger_message(ossn_print('wallet:method:not:enabled'), 'error');
 						redirect('wallet/overview');
-				}		
+				}
 				$title               = ossn_print('wallet:charge:failed');
 				$contents['content'] = ossn_plugin_view('wallet/charge/seamlessfailed');
 				$content             = ossn_set_page_layout('newsfeed', $contents);

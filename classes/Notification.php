@@ -10,6 +10,7 @@
  */
 namespace Wallet;
 class Notification {
+		private $user;
 		/**
 		 * Set a user
 		 *
@@ -65,5 +66,5 @@ class Notification {
 
 				$mail = new \OssnMail();
 				return $mail->notifyUser($this->user->email, $title, $body);
-		}		
+		}
 }

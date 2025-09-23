@@ -10,6 +10,7 @@
  */
 namespace Wallet;
 class Wallet {
+		private $user;
 		/**
 		 * Set a user
 		 *

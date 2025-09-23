@@ -13,6 +13,9 @@ namespace Wallet\Gateway\Stripe;
 require_once __Wallet__ . 'vendors/stripe/init.php';
 
 class Seamless {
+		private $_stripe;
+		private $_user;
+		
 		/**
 		 * Constructor for Stripe Seamless Gateway.
 		 *

@@ -10,7 +10,7 @@ if($amount <= 0) {
 }
 $id = input('id');
 
-$stripe = new \Wallet\Gateway\Stripe\Seamless(ossn_loggedin_user());
+$stripe = new \Wallet\Gateway\Stripe(ossn_loggedin_user());
 $status = $stripe->action($id, $amount, 'Wallet load via card');
 
 if($status->status == 'requires_action' && $status->next_action->type == 'use_stripe_sdk') {
@@ -23,6 +23,13 @@ if($status->status == 'requires_action' && $status->next_action->type == 'use_st
 
 		$wallet = new \Wallet\Wallet(ossn_loggedin_user()->guid);
 		$wallet->credit($amount, 'Load via Card');
+
+		ossn_trigger_callback('wallet', 'card:charged', array(
+				'user'       => ossn_loggedin_user(),
+				'amount'     => $amount,
+				'descrpitor' => 'Load via Card',
+				'time'       => time(),
+		));
 
 		echo json_encode(array(
 				'success'  => true,

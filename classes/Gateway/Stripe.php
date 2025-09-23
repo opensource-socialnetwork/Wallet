@@ -11,6 +11,9 @@
 namespace Wallet\Gateway;
 require_once __Wallet__ . 'vendors/stripe/init.php';
 class Stripe {
+		private $_stripe;
+		private $_user;
+
 		public function __construct($user) {
 				$com      = new \OssnComponents();
 				$settings = wallet_get_settings();
@@ -70,6 +73,19 @@ class Stripe {
 						$user->data->wallet_stripe_customer_id = $customer_id;
 						$user->save();
 				} else {
+						//exists update customer in system
+						$customer = $this->_stripe->customers->update($user->wallet_stripe_customer_id, array(
+								'name'        => $user->fullname,
+								'email'       => $user->email,
+								'description' => 'Wallet Customer',
+								'metadata'    => array(
+										'guid' => $user->guid,
+								),
+						));
+						if($customer && !isset($customer->id)) {
+								error_log('Customer update failed Wallet Stripe');
+								return false;
+						}
 						$customer_id = $user->wallet_stripe_customer_id;
 				}
 				return $customer_id;

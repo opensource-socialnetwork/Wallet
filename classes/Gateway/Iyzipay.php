@@ -10,6 +10,9 @@
  */
 namespace Wallet\Gateway;
 class Iyzipay {
+		private $_iyzipayOptions;
+		public $checkoutFormInitialize;
+		
 		public function __construct() {
 				require_once __Wallet__ . 'vendors/iyzipay/IyzipayBootstrap.php';
 				$IyzipayBootstrap = new \IyzipayBootstrap();
