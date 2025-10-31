@@ -65,7 +65,56 @@ try {
 				exit();
 		}
 } catch (\Stripe\Exception\CardException $e) {
+		// Card was declined, expired, etc.
+		$error = array(
+				'type'         => 'card_error',
+				'message'      => $e->getError()->message,
+				'code'         => $e->getError()->code,
+				'decline_code' => $e->getError()->decline_code,
+		);
+} catch (\Stripe\Exception\RateLimitException $e) {
+		// Too many requests made too quickly
+		$error = array(
+				'type'    => 'rate_limit',
+				'message' => $e->getMessage(),
+		);
+} catch (\Stripe\Exception\InvalidRequestException $e) {
+		// Invalid parameters were supplied to Stripe's API
+		$error = array(
+				'type'    => 'invalid_request',
+				'message' => $e->getMessage(),
+		);
+} catch (\Stripe\Exception\AuthenticationException $e) {
+		// API key or authentication failed
+		$error = array(
+				'type'    => 'auth_error',
+				'message' => $e->getMessage(),
+		);
+} catch (\Stripe\Exception\ApiConnectionException $e) {
+		// Network communication with Stripe failed
+		$error = array(
+				'type'    => 'api_connection',
+				'message' => $e->getMessage(),
+		);
+} catch (\Stripe\Exception\ApiErrorException $e) {
+		// Generic API error (covers most remaining Stripe errors)
+		$error = array(
+				'type'    => 'api_error',
+				'message' => $e->getMessage(),
+		);
+} catch (Exception $e) {
+		// Catch any other non-Stripe exception (e.g., PHP logic errors)
+		$error = array(
+				'type'    => 'general_error',
+				'message' => $e->getMessage(),
+		);
 }
+//log errors
+\OssnSession::assign('wallet_last_error', $error);
+ossn_trigger_callback('wallet', 'error', $error);
+
+header('Content-Type: application/json');
+error_log($error['type'] . ': ' . $error['message']);
 
 echo json_encode(array(
 		'success'  => false,

@@ -15,7 +15,7 @@ require_once __Wallet__ . 'vendors/stripe/init.php';
 class Seamless {
 		private $_stripe;
 		private $_user;
-		
+
 		/**
 		 * Constructor for Stripe Seamless Gateway.
 		 *
@@ -72,7 +72,24 @@ class Seamless {
 				$stripe = new \Wallet\Gateway\Stripe($this->_user);
 				return $stripe->getCustomerID();
 		}
-
+		/**
+		 * Get Stripe Customer ID.
+		 *
+		 * @return string|null The customer ID or null.
+		 */
+		public function calculateTax($desc, $price) {
+				$stripe = new \Wallet\Gateway\Stripe($this->_user);
+				return $stripe->calculateTax($desc, $price);
+		}		
+		/**
+		 * Get Stripe Customer address.
+		 *
+		 * @return array|void
+		 */
+		public function getCustomerAddress() {
+				$stripe = new \Wallet\Gateway\Stripe($this->_user);
+				return $stripe->getCustomerAddress();
+		}
 		/**
 		 * Retrieve a specific payment method from Stripe.
 		 *
@@ -148,7 +165,7 @@ class Seamless {
 		 */
 		public function charge($pm_id, $price, $descrption) {
 				$customer_id = $this->getCustomerID();
-				return \Stripe\PaymentIntent::create(array(
+				$args        = array(
 						'customer'            => $customer_id,
 						'payment_method'      => $pm_id,
 						'amount'              => intval($price) * 100,
@@ -157,7 +174,36 @@ class Seamless {
 						'confirmation_method' => 'automatic',
 						'confirm'             => true,
 						'off_session'         => true,
-				));
+				);
+				if($address_array = $this->getCustomerAddress()) {
+						$args['shipping']['name']    = $this->_user->fullname;
+						$args['shipping']['address'] = $address_array;
+				}
+
+				if(wallet_stripe_deduct_tax()) {
+						$tax_cal = $this->calculateTax($descrption, $price);
+						if($tax_cal) {
+								$tax_cal_id     = $tax_cal->id;
+								$args['amount'] = $tax_cal->amount_total;
+								if(empty($tax_cal->amount_total)) {
+										header('Content-Type: application/json');
+										echo json_encode(array(
+												'error' => ossn_print('wallet:error:taxamountempty'),
+										));
+										error_log('Tax amount can not be empty');
+										exit();
+								}
+								$args['hooks'] = array(
+										'inputs' => array(
+												'tax' => array(
+														'calculation' => $tax_cal_id,
+												),
+										),
+								);
+						}
+				}
+
+				return \Stripe\PaymentIntent::create($args);
 		}
 
 		/**

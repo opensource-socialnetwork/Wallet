@@ -21,6 +21,12 @@
     			'class' => 'ossn-admin-form'	
 		));	
 		break;
+	case 'tax':
+		echo ossn_view_form('wallet/admin/tax', array(
+    			'action' => ossn_site_url() . 'action/wallet/admin/settings/tax',
+    			'class' => 'ossn-admin-form'	
+		));	
+		break;		
 	case 'blocked':
 		echo ossn_view_form('wallet/admin/blocked', array(
     			'action' => 'javacript:void(0);',

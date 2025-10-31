@@ -56,7 +56,7 @@ class Wallet {
 				return $this->user->save();
 		}
 		/**
-		 * Debit a mount form user balance
+		 * Debit amount form user balance
 		 * This will throw expception if user have insufficent balance.
 		 *
 		 * @param float $amount Debit amount
@@ -170,7 +170,7 @@ class Wallet {
 		 *
 		 * @return boolean
 		 */
-		public function credit(int $amount, string $description): bool{
+		public function credit(float $amount, string $description): bool{
 				$notification = new \Wallet\Notification($this->user);
 				if($amount !== null && $amount > 0) {
 						if(!isset($this->user->wallet_balance)) {
