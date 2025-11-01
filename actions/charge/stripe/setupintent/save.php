@@ -33,6 +33,11 @@ try {
 				if($tier && com_is_active('MembershipTier')) {
 						$membership = new Membership\Tier();
 						$membership->setSubscribed(ossn_loggedin_user(), $tier->guid, $tier->duration);
+						
+						//debit
+						$wallet = new \Wallet\Wallet($user->guid);
+						$wallet->debit(WALLET_SEAMLESS_CHARGE, ossn_print('wallet:seamlesscharge:credit'));
+						
 						$redirect = 'home';
 				}
 
