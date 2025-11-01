@@ -1,5 +1,6 @@
 <?php
 $user = ossn_loggedin_user();
+$user = ossn_user_by_guid($user->guid);
 
 $DateTime = new DateTime('NOW');
 $wallet   = new \Wallet\Wallet(ossn_loggedin_user()->guid);

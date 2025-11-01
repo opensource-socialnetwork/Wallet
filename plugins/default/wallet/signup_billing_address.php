@@ -34,7 +34,6 @@ if(!wallet_stripe_deduct_tax()){
 					'options' => wallet_countries_list(),
 					'name' => 'country',
 					'placeholder' => ossn_print('wallet:billingaddress:country'),
-					'value' => $country,
 				));
 			?>
 		</div>
