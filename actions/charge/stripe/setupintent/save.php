@@ -25,10 +25,9 @@ $stripe = new \Wallet\Gateway\Stripe\Seamless(ossn_loggedin_user());
 try {
 		$charge = $stripe->charge($id, $test_charge, $descrpitor);
 		if($charge->status == 'succeeded') {
-				if($tier === false) {
-						$wallet = new \Wallet\Wallet($user->guid);
-						$wallet->credit(WALLET_SEAMLESS_CHARGE, ossn_print('wallet:seamlesscharge:credit'));
-				}
+				
+				$wallet = new \Wallet\Wallet($user->guid);
+				$wallet->credit(WALLET_SEAMLESS_CHARGE, ossn_print('wallet:seamlesscharge:credit'));
 
 				if($tier && com_is_active('MembershipTier')) {
 						$membership = new Membership\Tier();
