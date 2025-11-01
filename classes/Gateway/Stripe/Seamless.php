@@ -38,7 +38,8 @@ class Seamless {
 				}
 
 				\Stripe\Stripe::setApiKey($settings->stripe_secret_key);
-
+				\Stripe\Stripe::setApiVersion('2025-09-30.preview');
+				
 				$this->_stripe = new \Stripe\StripeClient($settings->stripe_secret_key);
 				$this->_user   = $user;
 		}
