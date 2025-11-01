@@ -8,13 +8,12 @@ $tier      = false;
 if(com_is_active('MembershipTier') && !empty($tier_guid)) {
 		$tier = get_membership_tier($tier_guid);
 }
-$descrpitor = 'wallet verification charge';
-
+$descrpitor = ossn_print('wallet:seamlesscharge:credit');
 $test_charge = WALLET_SEAMLESS_CHARGE;
 
 if($tier) {
 		$test_charge = $tier->tier_cost;
-		$descrpitor  = 'subscription';
+		$descrpitor  = $tier->title;
 }
 
 $redirect = false;
@@ -27,7 +26,7 @@ try {
 		if($charge->status == 'succeeded') {
 				
 				$wallet = new \Wallet\Wallet($user->guid);
-				$wallet->credit(WALLET_SEAMLESS_CHARGE, ossn_print('wallet:seamlesscharge:credit'));
+				$wallet->credit($test_charge, $descrpitor);
 
 				if($tier && com_is_active('MembershipTier')) {
 						$membership = new Membership\Tier();
@@ -35,7 +34,7 @@ try {
 						
 						//debit
 						$wallet = new \Wallet\Wallet($user->guid);
-						$wallet->debit(WALLET_SEAMLESS_CHARGE, ossn_print('wallet:seamlesscharge:credit'));
+						$wallet->debit($test_charge, $descrpitor);
 						
 						$redirect = 'home';
 				}
