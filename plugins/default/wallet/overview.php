@@ -38,23 +38,23 @@ return;
     	       <p><?php echo ossn_print('wallet:charge:balance:note');?></p>
                <?php
 			   $methods = wallet_enabled_payment_methods();
-			   if(in_array('paypal', $methods)){ 
+			   if(is_array($methods) && in_array('paypal', $methods)){ 
 			   ?>
 	               <a href="<?php echo ossn_site_url('wallet/charge/paypal');?>" class="btn btn-outline-secondary btn-sm"><i class="fab fa-paypal"></i>PayPal</a>
                <?php } ?>
                <?php  
-			   if(in_array('stripe', $methods)){  ?>
+			   if(is_array($methods) && in_array('stripe', $methods)){  ?>
 	               <a href="<?php echo ossn_site_url('wallet/charge/card');?>" class="btn btn-outline-secondary btn-sm"><i class="fas fa-credit-card"></i>Credit/Debit Card</a>
                <?php } ?>
                <?php  
-			   if(in_array('iyzipay', $methods)){  ?>
+			   if(is_array($methods) && in_array('iyzipay', $methods)){  ?>
 	               <a href="<?php echo ossn_site_url('wallet/charge/iyzipay');?>" class="btn btn-outline-secondary btn-sm"><i class="fas fa-credit-card"></i><?php echo ossn_print('wallet:charge:iyzipay');?></a>
                <?php } ?>               
     </div>
 </div>
 <?php
 $methods = wallet_enabled_payment_methods();
-if(in_array('stripe', $methods)) {
+if(is_array($methods) && in_array('stripe', $methods)) {
 $seamless = new \Wallet\Gateway\Stripe\Seamless($user);
 ?>
 <div class="ossn-widget">

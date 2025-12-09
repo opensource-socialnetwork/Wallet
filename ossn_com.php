@@ -301,7 +301,7 @@ function wallet_page_handler($pages) {
 						'title'    => ossn_print('wallet:change:user:balance'),
 						'contents' => ossn_plugin_view('wallet/balance_alter'),
 						'callback' => '#ossn-wallet-balance-alter-btn',
-				));
+				)); 
 				break;
 		case 'iyzipay_callback':
 				$token = input('token');
