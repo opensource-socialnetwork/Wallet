@@ -41,7 +41,7 @@ class Stripe {
 								'currency'   => strtolower(WALLET_CURRENCY_CODE),
 								'line_items' => array(
 										array(
-												'amount'       => intval($price) * 100,
+												'amount'       => round(floatval($price) * 100),
 												'reference'    => $reference,
 												'tax_behavior' => $tax_type,
 										),
@@ -66,7 +66,7 @@ class Stripe {
 				$args        = array(
 						'customer'             => $customer_id,
 						'payment_method'       => $id,
-						'amount'               => intval($price) * 100,
+						'amount'               => round(floatval($price) * 100),
 						'currency'             => strtolower(WALLET_CURRENCY_CODE),
 						'description'          => $descrption,
 						'payment_method_types' => array(

@@ -169,7 +169,7 @@ class Seamless {
 				$args        = array(
 						'customer'            => $customer_id,
 						'payment_method'      => $pm_id,
-						'amount'              => intval($price) * 100,
+						'amount'              => round(floatval($price) * 100),
 						'currency'            => strtolower(WALLET_CURRENCY_CODE),
 						'description'         => $descrption,
 						'confirmation_method' => 'automatic',
